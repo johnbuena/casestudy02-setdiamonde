@@ -21,3 +21,18 @@
 .eyewear-inspector{border-top:1px solid #485047}.eyewear-study-label{font-size:11px;letter-spacing:2px;color:#d3c9ae;padding:15px 0}#eyewear-canvas{height:760px;width:100%;position:relative}#eyewear-canvas>canvas{display:block;width:100%;height:100%;touch-action:none}#eyewear-canvas>img{width:100%;height:100%;object-fit:contain}#eyewear-view-note{font-size:12px!important;min-height:64px}@media(max-width:1000px){#eyewear-canvas{height:650px}}@media(max-width:650px){#eyewear-canvas{height:470px}}
 
 .hero-film{display:flex;flex-direction:column;justify-content:center;background:#171b18;overflow:hidden}.hero-film video{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:contain}.hero-film-toolbar{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:20px 28px;color:#d8d6c7;font-size:9px;letter-spacing:1.4px}.hero-film-toolbar button{border:1px solid #757b69;background:transparent;color:#f5f2ea;padding:12px 16px;font-size:11px;letter-spacing:.3px}.hero-film-toolbar button:hover{background:#343c32}@media(max-width:650px){.hero-art.hero-film{min-height:0}.hero-film-toolbar{padding:16px 20px}}
+
+/* Keep the film at its native widescreen ratio beneath the introduction. */
+.hero{display:flex;flex-direction:column;min-height:0}
+.hero-copy{padding:70px 6% 44px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(260px,.7fr);column-gap:8%;align-items:start}
+.hero-copy>.eyebrow{grid-column:1/-1;margin-bottom:24px}
+.hero-copy h1{grid-column:1;grid-row:2/4;font-size:clamp(48px,5.5vw,88px)}
+.hero-copy .intro{grid-column:2;margin:0 0 20px;max-width:400px}
+.hero-copy>.text-link{grid-column:2;align-self:start}
+.hero-copy .hero-foot{grid-column:1/-1;margin-top:32px;padding-top:22px;border-top:1px solid var(--line);flex-direction:row}
+.hero-art.hero-film{min-height:0;width:100%;display:block;background:var(--paper);overflow:visible}
+.hero-film video{width:100%;height:auto;aspect-ratio:16/9;object-fit:contain;background:#171b18}
+.hero-film-toolbar{padding:18px 6%;background:var(--paper);color:#555b4e;border-bottom:1px solid var(--line)}
+.hero-film-toolbar button{color:var(--ink);border-color:#969c8d}
+.hero-film-toolbar button:hover{background:#e7e8de}
+@media(max-width:650px){.hero-copy{display:flex;flex-direction:column;padding:44px 6% 28px}.hero-copy h1{font-size:52px}.hero-copy .intro{margin:24px 0 14px;max-width:none}.hero-copy .hero-foot{width:100%;margin-top:26px;padding-top:18px}.hero-film-toolbar{padding:14px 6%;gap:12px;font-size:8px}.hero-film-toolbar button{padding:10px 12px}}
