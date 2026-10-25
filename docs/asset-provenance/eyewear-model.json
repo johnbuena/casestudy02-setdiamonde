@@ -1,0 +1,28 @@
+{
+  "created": "2026-10-25",
+  "generator": "Tripo Studio",
+  "taskId": "cf7e85ca-389a-4276-86d7-44dc83cf34e2",
+  "model": "H3.1 Best Quality",
+  "parts": "Detailed",
+  "texture": "4K, Remove Lighting enabled",
+  "credits": {
+    "geometry": 60,
+    "texture": 20,
+    "total": 80,
+    "balanceObserved": 515
+  },
+  "generationInput": "public/editorial/eyewear-prongfree/full.png",
+  "revisedReferences": "public/editorial/eyewear-original-v2/",
+  "export": "public/models/eyewear-optical-v1.glb",
+  "refinements": [
+    "Taubin surface smoothing preserving UV texture coordinates",
+    "Nonmetallic polished acetate with separate clearcoat",
+    "Separate reconstructed gradient lenses with view-dependent reflections",
+    "Fourteen independent faceted dielectric diamonds with dispersion and internal reflection shader",
+    "Tapered black inset, thin champagne outline and oval hinge accents reconstructed to match revised references",
+    "Inner acetate backing closes generated openings",
+    "Meshopt compression"
+  ],
+  "note": "The base frame was generated from the first prong-free reference. The revised original-style temple ornaments are reconstructed geometry, not a second Tripo generation. Generated views are design references, not calibrated CAD views. Optical appearance is illustrative; polarization, UV protection and retention are not tested. GLB uses standard materials; website adds custom optical shaders.",
+  "environment": "Existing studio-small-09-2k.hdr, Poly Haven CC0, same as watch"
+}
