@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-25",
+  "generator": "Tripo H3.1 Geometry & Texture, private",
+  "taskId": "31980df2-9eb8-452c-b32e-43ca9c450185",
+  "source": "public/editorial/watch-prongfree/full.png",
+  "additionalReferenceImages": [
+    "front.png",
+    "side.png",
+    "back.png"
+  ],
+  "rejectedTask": {
+    "id": "c47103f3-c2f8-41fc-82d4-51636de77ce5",
+    "reason": "Multi-view reconstruction introduced a second face on rear; not deployed."
+  },
+  "watchCredits": 110,
+  "original": "/Users/reyco/Downloads/watch-prongfree-original.glb",
+  "delivery": {
+    "path": "public/models/watch-prongfree-v1.glb",
+    "bytes": 17800336,
+    "sha256": "cd76cbe482903354ca7965b5f311074b7a0646a81345845416bb362b565da4ab",
+    "triangles": 1929119,
+    "normalScale": 0.08,
+    "textures": [
+      {
+        "size": [
+          4096,
+          4096
+        ],
+        "sha256": "015b3bef2f6af4f7978bde32ed06b5d0cf6f19e99474e88b97a9704dcbc4a539"
+      },
+      {
+        "size": [
+          4096,
+          4096
+        ],
+        "sha256": "315897d9ff9d452f551916b78ca4cbeef9f3ab73429b438fdded5dec3a0ac603"
+      },
+      {
+        "size": [
+          4096,
+          4096
+        ],
+        "sha256": "e7c386ee7a98912c3a5e8fa6498f87db1919e11a46a8ac848cc67ecae3be68e4"
+      }
+    ]
+  },
+  "assessment": "Smooth prong-free visual bezel, complete closed bracelet, inferred rear. Baked reflections and generated geometry are not physically accurate optics or manufacturing CAD."
+}

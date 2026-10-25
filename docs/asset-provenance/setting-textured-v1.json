@@ -1,0 +1,33 @@
+{
+  "task": "b31ddbdc-af46-48c4-97a8-2810e841c6b9",
+  "generator": "Tripo H3.1 Generate in Parts trial, Balanced, then reference texture generation",
+  "credits": {
+    "partsTrial": 0,
+    "texture": 20,
+    "totalThisRevision": 130,
+    "balanceAfter": 595
+  },
+  "source": "public/editorial/watch-prongfree/specimen.png",
+  "original": "/Users/reyco/Downloads/setting-textured-original.glb",
+  "delivery": {
+    "path": "public/models/setting-textured-v1.glb",
+    "bytes": 15692704,
+    "meshes": 3,
+    "textureSizes": [
+      [
+        4096,
+        4096
+      ],
+      [
+        2048,
+        2048
+      ],
+      [
+        2048,
+        2048
+      ]
+    ],
+    "normalScale": 0.08
+  },
+  "notes": "Three separately generated textured assemblies, sorted by original Y height; website repositions them for illustrative assembly and separation. Not extracted from watch or proprietary CAD. Textured diamond reflections are baked approximations."
+}

@@ -91,3 +91,19 @@ Verification: production build and whitespace checks passed. Desktop overview/de
 ## Website copy and model ordering update
 
 Public generator names and the requested supporting copy have been removed. The tagline is now “Flawless Diamond Setting”; the partnership journey section is removed and enquiry becomes section 04. The image-derived complete watch is now **3D-1** and loads automatically on ordinary page visits. Explicit `#3d-2` links load the procedural study, now **3D-2**. Asset provenance and generation prompts are retained under `docs/asset-provenance/`, outside the published static assets.
+
+## Prong-free watch and conventional comparison
+
+The image-derived pronged watch is preserved as **3D-3**, labelled as a conventional setting comparison. **3D-2** retains the original procedural study. **3D-1** is reserved for the new prong-free reconstruction and remains the automatic default; all three deep links are supported.
+
+`public/editorial/watch-prongfree/` contains the new full, front, side and back references plus an exploded specimen reference. The full-watch reference was regenerated from the prong-free macro alone after an initial edit retained metal beads. Generation prompts and rejected-iteration notes are in `docs/asset-provenance/`.
+
+The setting specimen is independent illustrative geometry. Its component separation explains the stone, lower insert and outer carrier, and is not a reconstruction of confidential production construction. The live appearance and the reference stills are separate renderings; macro diamond optics remain an approximation.
+
+Final reconstruction: the multi-view attempt (`c47103f3-c2f8-41fc-82d4-51636de77ce5`) was rejected because it introduced a second dial on the rear. The deployed watch (`31980df2-9eb8-452c-b32e-43ca9c450185`) uses the full prong-free reference alone: 1,929,119 triangles, three 4K maps, 17.80 MB compressed GLB. Its rear is inferred, while all four reference images remain inspectable.
+
+The final setting specimen is image-derived, replacing the temporary procedural finish experiment: generation-in-parts trial `b31ddbdc-af46-48c4-97a8-2810e841c6b9`, followed by reference texturing. Three separate meshes retain a 4K color map and two 2K maps in a 15.69 MB compressed GLB. `src/setting-materials.js` recenters and repositions these components; compressed integer attributes are expanded to floats before geometry transforms. Separation moves the diamond, insert and carrier independently with camera centering. This is an illustrative visual assembly; fits, clearances and contacts are not engineering validated.
+
+Both watch attempts used 55 credits each; the parts trial used no credits and texturing used 20. Observed balance: 725 → 595 (130 total this revision). 8K is unavailable on the current plan after the earlier trial, and no upgrade was purchased. Exact source paths and provenance are in `docs/asset-provenance/`.
+
+Verification: production build, whitespace checks, all three model mappings, watch front/reverse, specimen closed/fully separated states, and 390px mobile overflow check passed. Stills and real-time textures are different visual representations; baked diamond reflections remain an approximation. High-density models are intentionally retained for close-up demo inspection and are relatively heavy for mobile.
