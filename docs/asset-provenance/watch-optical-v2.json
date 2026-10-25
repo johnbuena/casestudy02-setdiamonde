@@ -21,6 +21,24 @@
     "localFile": "public/environments/studio-small-09-2k.hdr"
   },
   "limitations": "Illustrative design only. Does not reproduce proprietary retention geometry or establish gemological, optical, manufacturing or retention performance. Real-time rendering remains distinct from offline reference photography. Reconstructed band and case retain some inferred shape irregularities.",
-  "exports": ["public/models/watch-optical-v2.glb", "public/models/setting-optical-v2.glb"],
-  "implementation": ["src/luxury-surfaces.js", "src/image-watch-inspector.js", "src/setting-materials.js"]
+  "exports": [
+    "public/models/watch-optical-v2.glb",
+    "public/models/setting-optical-v2.glb"
+  ],
+  "implementation": [
+    "src/luxury-surfaces.js",
+    "src/image-watch-inspector.js",
+    "src/setting-materials.js"
+  ],
+  "contourRefinement": {
+    "bezelDeckDepth": 1.45,
+    "previousDeckDepth": 3.65,
+    "details": [
+      "Shallow crowned deck, rounded shoulder and perimeter seam",
+      "Thirty recessed polished seat channels below the diamond girdles",
+      "Raised rounded inner ring above the dial edge",
+      "Gentle transverse crown on reconstructed bracelet links, polished center and satin-polished outer surfaces"
+    ],
+    "preserved": "Diamond shader, gemstone size and position, studio reflections and sapphire shader unchanged"
+  }
 }
