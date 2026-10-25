@@ -43,3 +43,9 @@ Four selected 1536 × 1024 PNG concept images are in `public/editorial/`: watch,
 Click photographs to inspect at up to 250% display magnification; this enlarges original pixels and does not add image resolution. All three simplified 3D studies can rotate with neutral/warm studio lighting and front/oblique/close-up cameras. These are not photorealistic turntable reconstructions of the generated stills. GLB exports include a third bracelet asset; exported acetate uses a solid representative color while the browser adds procedural marbling.
 
 GitHub publication remains deferred at the user's request.
+
+## Reference-fidelity revision
+
+The current site uses the three detailed ImageGen photographs in the atelier instead of the simplified procedural 3D viewer. Controls provide image cropping and full-resolution inspection, not object rotation. Earlier GLB files remain as development artifacts; they are not the currently presented products.
+
+Eyewear now follows the supplied side-set tortoiseshell design (`sunglasses-side-v2.png`). The new comparison and dedicated `retainer-cutaway-v2.png` illustrate a silver cup and stepped lower retaining insert based on supplied references. The insert matches the carrier metal; seams and finish distinguish the components. These illustrations show the intended retention arrangement without claiming tested strength or safety. Original CAD remains available for comparison.
