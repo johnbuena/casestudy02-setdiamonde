@@ -75,3 +75,15 @@ The interactive section now offers **3D-1** (the preserved procedural watch) and
 The delivered `watch-image-v1.glb` is 18.16 MB versus the original 63.73 MB. All 1,929,930 triangles and the original three texture payloads are retained; mesh compression includes fine position/normal/UV quantization. Reproduce with `node scripts/prepare-image-watch.mjs /path/to/original.glb`. The viewer loads the mesh decoder locally through the Three.js bundle. This is a detailed trial asset, still relatively heavy for mobile rendering.
 
 Visual assessment: image-derived metal finish and texture are closer to the reference, but stones show reconstruction artifacts at macro scale, and cropped bracelet ends/underside are inferred. It is not an exact photorealistic reconstruction or production engineering model. Preserve both versions for comparison rather than declaring a quality winner.
+
+## Complete-watch rebuild (3D-2 revision 2)
+
+3D-2 now loads `watch-image-v2.glb`, generated from four new ImageGen views (front, three-quarter, side and back). The complete closed bracelet and continuous bezel replace the cropped v1. Five inspectable references, including a separate bezel diamond macro, are available beside the viewer in `public/editorial/watch-v2/`; exact ImageGen prompts are in `prompts.json`. The macro is a visual reference, not an additional full-object generation input. 3D-1 is preserved.
+
+Tripo task `71b10b57-b9ee-4b7c-b214-892cc4639456` used H3.1 private multi-view generation and the available 8K trial. Observed credits remained 725. The color texture is 8192×8192; the other two maps are 4096×4096. Original texture payload hashes and all 1,941,204 triangles are preserved in the compressed 28.65 MB GLB (original 74.74 MB). Normal-map strength is reduced to 0.08 in the delivered material to reduce the inflated, rippled surface appearance. Provenance and hashes are recorded in `public/models/watch-image-v2-provenance.json`.
+
+Reproduce: `node scripts/prepare-image-watch.mjs /Users/reyco/Downloads/watch-image-v2-full.glb public/models/watch-image-v2.glb --soften-normals`.
+
+Visual assessment: full bracelet and upper bezel coverage improved; macro gemstones still have baked reflections and inferred facets, and are not equivalent to the ImageGen macro or a physically accurate optical model. No confidential locking geometry is represented. The separate macro remains accessible as the target visual reference. Downloaded meshes are visualization assets, not manufacturing CAD.
+
+Verification: production build and whitespace checks passed. Desktop overview/detail/reverse cameras and mobile reference dialog were visually inspected. At 390px the page has no horizontal overflow, and the browser reported no console errors. Camera presets now render immediately even in a background preview. The existing large Three.js chunk warning remains. Local only; GitHub push remains deferred.

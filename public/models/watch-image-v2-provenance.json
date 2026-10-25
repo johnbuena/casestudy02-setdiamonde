@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-25",
+  "generator": "Tripo H3.1 Geometry & Texture, Best Quality, private multi-view",
+  "taskId": "71b10b57-b9ee-4b7c-b214-892cc4639456",
+  "references": {
+    "front": "front.png",
+    "left": "full-three-quarter.png",
+    "right": "side.png",
+    "back": "back.png"
+  },
+  "referenceDirectory": "public/editorial/watch-v2",
+  "macro": "bezel-macro.png is a separate visual inspection reference, not a multi-view input.",
+  "export": "8K texture trial; observed credit balance remained 725",
+  "original": {
+    "path": "/Users/reyco/Downloads/watch-image-v2-full.glb",
+    "bytes": 74736544,
+    "triangles": 1941204
+  },
+  "delivery": {
+    "path": "public/models/watch-image-v2.glb",
+    "bytes": 28652920,
+    "sha256": "631977614bb5204bac25edbe16b459c7363afddfc4d5d9aa80eed560fcda1d10",
+    "triangles": 1941204,
+    "normalScale": 0.08,
+    "textures": [
+      {
+        "bytes": 11465457,
+        "sha256": "4197f24a987f5bdf832471e3ad4476173242b70c201a44bb484d035b0999692e",
+        "size": [
+          8192,
+          8192
+        ]
+      },
+      {
+        "bytes": 2237998,
+        "sha256": "1cb1661641497102bef7c16e6f9426e0e46f965965f6be56843056e5cee41e44",
+        "size": [
+          4096,
+          4096
+        ]
+      },
+      {
+        "bytes": 4868619,
+        "sha256": "25fc1a40d21778a08e80a3485bcb0ff7c3668ae89dc9cad1975263a9d3ff085d",
+        "size": [
+          4096,
+          4096
+        ]
+      }
+    ]
+  },
+  "texturesPreserved": true,
+  "limitations": "Image-derived demonstration mesh. Full bracelet and continuous bezel restored. Gemstones retain baked optical appearance and inferred geometry; not production CAD or validated confidential setting geometry."
+}
