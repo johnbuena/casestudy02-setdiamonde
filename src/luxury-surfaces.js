@@ -35,6 +35,21 @@ function brushedMetal(roughness,band=false){
  m.customProgramCacheKey=()=>`satin-grain-${band}`;return m;
 }
 
+// Local concavity darkens recess reflections as well as diffuse light. This gives
+// reconstructed hinge gaps and screw recesses depth without outlining silhouettes.
+function applyRecessShading(geometry,materials){
+ const p=geometry.attributes.position,n=geometry.attributes.normal,cells=new Map(),step=.8;
+ for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i),z=p.getZ(i),key=(Math.floor(x/step)+128)*65536+(Math.floor(y/step)+128)*256+Math.floor(z/step)+128;let c=cells.get(key);if(!c){c=[0,0,0,0];cells.set(key,c);}c[0]+=x;c[1]+=y;c[2]+=z;c[3]++;}
+ for(const c of cells.values()){c[0]/=c[3];c[1]/=c[3];c[2]/=c[3];}
+ const values=new Float32Array(p.count);
+ for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i),z=p.getZ(i),cx=Math.floor(x/step),cy=Math.floor(y/step),cz=Math.floor(z/step);let total=0,weight=0;
+  for(let dx=-1;dx<=1;dx++)for(let dy=-1;dy<=1;dy++)for(let dz=-1;dz<=1;dz++){const c=cells.get((cx+dx+128)*65536+(cy+dy+128)*256+cz+dz+128);if(!c)continue;const vx=c[0]-x,vy=c[1]-y,vz=c[2]-z,d=Math.hypot(vx,vy,vz);if(d<.1||d>1.5)continue;const w=1-d/1.5;total+=Math.max(0,vx*n.getX(i)+vy*n.getY(i)+vz*n.getZ(i)-.04)*w;weight+=w;}
+  values[i]=Math.max(.18,1-3.8*total/Math.max(weight,.001));
+ }
+ geometry.setAttribute('recessOcclusion',new THREE.BufferAttribute(values,1));
+ for(const material of materials){const previous=material.onBeforeCompile,cache=material.customProgramCacheKey();material.onBeforeCompile=shader=>{previous.call(material,shader);shader.vertexShader=shader.vertexShader.replace('#include <common>','#include <common>\nattribute float recessOcclusion; varying float cavity;').replace('#include <begin_vertex>','#include <begin_vertex>\ncavity=recessOcclusion;');shader.fragmentShader=shader.fragmentShader.replace('#include <common>','#include <common>\nvarying float cavity;').replace('#include <aomap_fragment>','#include <aomap_fragment>\nreflectedLight.indirectSpecular*=cavity*cavity; reflectedLight.indirectDiffuse*=cavity; reflectedLight.directSpecular*=.5+.5*cavity;');};material.customProgramCacheKey=()=>cache+'-recesses';}
+}
+
 function brilliantCut(){
  const points=[];
  for(const [n,r,z,offset]of [[1,0,-.82,0],[16,1,0,0],[16,1,.025,0],[8,.56,.34,Math.PI/8]]){
@@ -98,13 +113,23 @@ export function refineWatchSurfaces(model,environment){
   const slope=-amplitude*Math.PI/(2*half)*Math.sin(Math.PI*t)*falloff;
   const n=new THREE.Vector3(normals.getX(i)-slope*outward,normals.getY(i),normals.getZ(i)).normalize();normals.setXYZ(i,n.x,n.y,n.z);
  }
- const buckets=[[],[],[]];for(let i=0;i<kept.length;i+=3){let x=0,y=0,z=0;for(let k=0;k<3;k++){const v=kept[i+k];x+=p.getX(v)/3;y+=p.getY(v)/3;z+=p.getZ(v)/3;}const band=(Math.abs(y)>28||z<14)&&Math.abs(x+1.3)<12;const slot=band?(Math.abs(x+1.3)<4.6?1:2):0;buckets[slot].push(kept[i],kept[i+1],kept[i+2]);}
- g.clearGroups();let offset=0;for(let i=0;i<3;i++){g.addGroup(offset,buckets[i].length,i);offset+=buckets[i].length;}g.setIndex(buckets.flat());g.computeBoundingBox();g.computeBoundingSphere();mesh.removeFromParent();mesh.position.set(0,0,0);mesh.rotation.set(0,0,0);mesh.scale.set(1,1,1);
+ const buckets=[[],[],[],[]];for(let i=0;i<kept.length;i+=3){let x=0,y=0,z=0;for(let k=0;k<3;k++){const v=kept[i+k];x+=p.getX(v)/3;y+=p.getY(v)/3;z+=p.getZ(v)/3;}const band=(Math.abs(y)>28||z<14)&&Math.abs(x+1.3)<12;const slot=band?(z < -30 && Math.abs(y)<18?3:(Math.abs(x+1.3)<4.6?1:2)):0;buckets[slot].push(kept[i],kept[i+1],kept[i+2]);}
+ g.clearGroups();let offset=0;for(let i=0;i<4;i++){g.addGroup(offset,buckets[i].length,i);offset+=buckets[i].length;}g.setIndex(buckets.flat());g.computeBoundingBox();g.computeBoundingSphere();mesh.removeFromParent();mesh.position.set(0,0,0);mesh.rotation.set(0,0,0);mesh.scale.set(1,1,1);
  // The reconstruction's color/roughness maps contain baked glare and scratches.
  // Retain its case/link geometry, but give the exposed metal a uniform polish.
- const old=mesh.material;Object.values(old).forEach(v=>{if(v?.isTexture)v.dispose();});old.dispose();mesh.material=[polishedMetal(.16),brushedMetal(.24,true),brushedMetal(.33,true)];root.add(mesh);
+ const old=mesh.material;Object.values(old).forEach(v=>{if(v?.isTexture)v.dispose();});old.dispose();mesh.material=[polishedMetal(.23),brushedMetal(.29,true),brushedMetal(.36,true),brushedMetal(.42,true)];applyRecessShading(g,mesh.material);root.add(mesh);
  }
+
+ // Machined caseback details fitted to the reconstructed rear case plane.
+ const seam=new THREE.MeshStandardMaterial({name:'Recessed charcoal joint',color:0x181b1d,metalness:.35,roughness:.48});
+ const back=new THREE.Group();back.name='Machined caseback with recessed screw heads';back.position.set(-1.1,0,18.95);back.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),new THREE.Vector3(0,-.09,-1).normalize());
+ const backMetal=brushedMetal(.44),screwMetal=polishedMetal(.23);back.add(disc(18.65,.14,backMetal,.12));back.add(ring(18.65,18.81,.045,.14,seam));
+ for(const r of [15.75,16.0])back.add(ring(r,r+.035,.015,.20,seam));
+ for(let i=0;i<6;i++){const a=(i+.5)*Math.PI/3,x=17.4*Math.cos(a),y=17.4*Math.sin(a);const screw=new THREE.Group();screw.position.set(x,y,.21);screw.rotation.z=a;screw.add(disc(.76,.035,seam,0));screw.add(disc(.59,.07,screwMetal,.03));const slot=new THREE.Mesh(new RoundedBoxGeometry(.88,.115,.02,2,.015),seam);slot.position.z=.073;screw.add(slot);back.add(screw);}
+ root.add(back);
  const face=new THREE.Group();face.position.x=-1.1;root.add(face);const metal=polishedMetal(.1);
+ const roseGold=new THREE.MeshPhysicalMaterial({name:'Rose-gold polished accent',color:0xe2ad98,metalness:.88,roughness:.2,clearcoat:.25,envMapIntensity:1.05});
+ const recess=new THREE.MeshStandardMaterial({name:'Dark recessed construction seam',color:0x171a1d,metalness:.45,roughness:.48});
  // A shallow crowned deck over a curved shoulder, instead of a thick flat slab.
  const bezel=new THREE.Shape();bezel.absarc(0,0,26.08,0,Math.PI*2,false);const centerHole=new THREE.Path();centerHole.absarc(0,0,20.55,0,Math.PI*2,true);bezel.holes.push(centerHole);
  const count=30,orbit=23.35,radius=2.04;
@@ -113,14 +138,15 @@ export function refineWatchSurfaces(model,environment){
   const hole=new THREE.Path();hole.absarc(x,y,2.17,0,Math.PI*2,true);bezel.holes.push(hole);
   const gem=createOpticalDiamond(environment,radius,.10);gem.position.set(x,y,32.15);gem.rotation.z=a;face.add(gem);
   // A turned relief channel is below the girdle: no prongs or overlap of the crown.
-  const seat=turnedRing([[2.045,31.68],[2.045,31.97],[2.075,32.01],[2.115,32.01],[2.15,31.94],[2.18,31.72]],metal,'Recessed polished diamond-seat groove');seat.position.set(x,y,0);face.add(seat);
+  const seat=turnedRing([[2.045,31.68],[2.045,31.97],[2.075,32.01],[2.17,32.01],[2.22,31.94],[2.24,31.72]],roseGold,'Rose-gold diamond seat below the exposed crown');seat.position.set(x,y,0);face.add(seat);
  }
  const geometry=new THREE.ExtrudeGeometry(bezel,{depth:1.45,steps:2,curveSegments:128,bevelEnabled:true,bevelSegments:5,bevelSize:.11,bevelThickness:.14});
  const deck=geometry.attributes.position;for(let i=0;i<deck.count;i++){const r=Math.hypot(deck.getX(i),deck.getY(i));const crown=.17*Math.max(0,1-((r-orbit)/2.75)**2);deck.setZ(i,deck.getZ(i)+crown);}
  geometry.computeVertexNormals();const body=new THREE.Mesh(geometry,brushedMetal(.34));body.position.z=30.15;body.name='Slim crowned circular bezel with thirty recessed stone seats';face.add(body);
  face.add(turnedRing([[20.45,24.5],[25.55,24.5],[25.90,25.0],[26.18,26.2],[26.30,27.65],[26.30,28.10],[26.20,28.35],[26.06,28.65],[26.06,29.12],[25.98,29.38],[25.82,29.60],[25.82,29.76],[25.98,29.88],[26.05,30.05],[26.02,30.22],[25.90,30.33],[20.45,30.33]],metal,'Rounded bezel shoulder and recessed perimeter seam'));
- face.add(turnedRing([[20.12,31.62],[20.12,32.13],[20.17,32.26],[20.25,32.31],[20.39,32.31],[20.51,32.25],[20.60,32.10],[20.60,31.62]],metal,'Elevated polished inner bezel ring'));
- const handsMetal=polishedMetal(.1),inlayMetal=brushedMetal(.3);inlayMetal.metalness=.65;inlayMetal.color.set(0xdde0df);const accent=new THREE.MeshStandardMaterial({name:'Rhodium inset contrast',color:0x6f757b,metalness:.85,roughness:.28});
+ face.add(turnedRing([[20.12,31.62],[20.12,32.13],[20.17,32.26],[20.25,32.31],[20.39,32.31],[20.51,32.25],[20.60,32.10],[20.60,31.62]],roseGold,'Elevated rose-gold inner bezel ring'));
+ face.add(turnedRing([[26.065,28.72],[26.075,28.72],[26.075,28.93],[26.065,28.93]],recess,'Dark inset case perimeter seam'));
+ const handsMetal=new THREE.MeshPhysicalMaterial({name:'Bright polished silver hand bevels',color:0xf5f7fa,metalness:.55,roughness:.14,clearcoat:.65,clearcoatRoughness:.08}),inlayMetal=brushedMetal(.3);inlayMetal.metalness=.38;inlayMetal.color.set(0xdde0df);const accent=new THREE.MeshStandardMaterial({name:'Rhodium inset contrast',color:0x6f757b,metalness:.85,roughness:.28});
  const dialMaterial=new THREE.MeshPhysicalMaterial({name:'Black lacquer dial',color:0x090c10,metalness:.25,roughness:.28,clearcoat:.65,clearcoatRoughness:.15});face.add(disc(20.35,.2,dialMaterial,30.15));
  // Fine radial brushing is geometry: it does not carry baked specular reflections.
  const lines=[];for(let i=0;i<1080;i++){const a=i*Math.PI*2/1080;lines.push(.6*Math.cos(a),.6*Math.sin(a),30.26,19.6*Math.cos(a),19.6*Math.sin(a),30.26);}const brush=new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute(lines,3)),new THREE.LineBasicMaterial({color:0x31363e,transparent:true,opacity:.12}));face.add(brush);
@@ -138,10 +164,12 @@ export function refineWatchSurfaces(model,environment){
  function sword(angle,len,width,z){
   const group=new THREE.Group();group.name='Faceted sword hand';group.rotation.z=-angle;group.position.z=z;
   const shape=new THREE.Shape();shape.moveTo(-width*.33,-1.35);shape.lineTo(-width*.5,1.4);shape.lineTo(-width*.32,len-1);shape.lineTo(0,len);shape.lineTo(width*.32,len-1);shape.lineTo(width*.5,1.4);shape.lineTo(width*.33,-1.35);shape.closePath();
-  const g=new THREE.ExtrudeGeometry(shape,{depth:.12,bevelEnabled:true,bevelThickness:.065,bevelSize:.065,bevelSegments:2});group.add(new THREE.Mesh(g,handsMetal));
-  const strip=new THREE.Mesh(new RoundedBoxGeometry(width*.23,len-2.4,.025,3,.01),inlayMetal);strip.position.set(0,(len-1)/2,.19);group.add(strip);face.add(group);
+  const g=new THREE.ExtrudeGeometry(shape,{depth:.12,bevelEnabled:true,bevelThickness:.08,bevelSize:.09,bevelSegments:3});group.add(new THREE.Mesh(g,handsMetal));
+  // A raised central ridge divides two differently angled polished faces.
+  const facets=[];for(const side of [-1,1]){const v=[0,1.3,.25,side*width*.39,1.3,.14,side*width*.23,len-1,.14,0,len-.3,.22];const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute([...v.slice(0,3),...v.slice(3,6),...v.slice(6,9),...v.slice(0,3),...v.slice(6,9),...v.slice(9,12)],3));geometry.computeVertexNormals();const surface=handsMetal.clone();surface.side=THREE.DoubleSide;surface.roughness=side<0?.17:.24;surface.metalness=side<0?.38:.52;facets.push(new THREE.Mesh(geometry,surface));}group.add(...facets);
+  const strip=new THREE.Mesh(new RoundedBoxGeometry(width*.09,len-2.6,.025,3,.01),inlayMetal);strip.position.set(0,(len-.9)/2,.255);group.add(strip);face.add(group);
  }
- sword(-Math.PI/3,11.5,1.08,30.82);sword(Math.PI/3,16,.74,31.14);
+ sword(-Math.PI/3,11.5,1.32,30.82);sword(Math.PI/3,16,.98,31.14);
  const second=new THREE.Group();second.rotation.z=-Math.PI*1.21;second.position.z=31.55;second.name='Fine seconds hand and counterweight';
  const needle=new THREE.Mesh(new RoundedBoxGeometry(.105,21,.06,2,.025),handsMetal);needle.position.y=7.8;second.add(needle);
  const counter=disc(.37,.08,metal,0);counter.position.y=-2.5;second.add(counter);face.add(second);

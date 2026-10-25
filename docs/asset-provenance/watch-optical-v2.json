@@ -43,9 +43,16 @@
   },
   "finishRefinement": {
     "bezel": "Directional procedural satin grain; roughness .34; polished borders and seats retained",
-    "bracelet": "Longitudinal grain with .24 centre and .33 outer-link roughness",
+    "bracelet": "Longitudinal grain with .29 centre-link, .36 outer-link and .42 clasp roughness",
     "dialDetails": "Applied chamfered baton markers, inset faces, tapered bevelled sword hands, fine seconds hand and tiered pivot",
     "diamonds": "Watch-only subtle white sheen, existing facet refraction retained",
     "exportNote": "GLB includes updated geometry and satin roughness; procedural brushing and optical sheen are browser shader effects."
+  },
+  "contrastRefinement": {
+    "hands": "Brighter silver surfaces, widened tapered profiles, raised twin facets and central ridge; mixed diffuse/specular PBR approximation for dial legibility",
+    "accents": "Rose-gold inner bezel and all thirty diamond-seat edges, kept below the exposed diamond crowns",
+    "depth": "Geometry-derived concavity shading on reconstructed metal; camera-dependent contact occlusion; dark recessed perimeter seam",
+    "caseback": "Satin back plate with concentric details and six slotted recessed screw heads; illustrative geometry",
+    "exportNote": "Updated geometry and standard PBR finishes are exported. Custom recess shading and screen-space contact occlusion are browser effects, alongside the existing optical and brushing shaders."
   }
 }
