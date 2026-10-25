@@ -40,5 +40,12 @@
       "Gentle transverse crown on reconstructed bracelet links, polished center and satin-polished outer surfaces"
     ],
     "preserved": "Diamond shader, gemstone size and position, studio reflections and sapphire shader unchanged"
+  },
+  "finishRefinement": {
+    "bezel": "Directional procedural satin grain; roughness .34; polished borders and seats retained",
+    "bracelet": "Longitudinal grain with .24 centre and .33 outer-link roughness",
+    "dialDetails": "Applied chamfered baton markers, inset faces, tapered bevelled sword hands, fine seconds hand and tiered pivot",
+    "diamonds": "Watch-only subtle white sheen, existing facet refraction retained",
+    "exportNote": "GLB includes updated geometry and satin roughness; procedural brushing and optical sheen are browser shader effects."
   }
 }
