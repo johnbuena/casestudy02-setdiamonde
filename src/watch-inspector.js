@@ -1,0 +1,21 @@
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {createRefinedWatch,createSettingStudy} from './refined-watch.js';
+import {createDiamondOptics,attachDiamondOptics} from './diamond-optics.js';
+
+export function mountWatchInspector(host){
+ const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;renderer.setClearColor(0x1c211f);host.replaceChildren(renderer.domElement);
+ const scene=new THREE.Scene();const pmrem=new THREE.PMREMGenerator(renderer);const room=new THREE.Scene();room.background=new THREE.Color(0x171b20);const cards=[];for(const [pos,size,power]of [[[30,45,65],[18,75],5],[[-55,10,35],[12,65],3],[[10,-60,30],[55,8],4],[[20,30,-60],[20,50],3]]){const card=new THREE.Mesh(new THREE.PlaneGeometry(...size),new THREE.MeshBasicMaterial({color:new THREE.Color(power,power,power),side:THREE.DoubleSide}));card.position.set(...pos);card.lookAt(0,0,0);room.add(card);cards.push(card);}const cubeTarget=new THREE.WebGLCubeRenderTarget(256,{type:THREE.HalfFloatType});const cubeCamera=new THREE.CubeCamera(.1,500,cubeTarget);room.background=new THREE.Color(.3,.32,.35);cubeCamera.update(renderer,room);room.background=new THREE.Color(0x171b20);const env=pmrem.fromScene(room,.01);scene.environment=env.texture;scene.environmentIntensity=1;pmrem.dispose();cards.forEach(x=>{x.geometry.dispose();x.material.dispose();});
+ const camera=new THREE.PerspectiveCamera(32,1,.05,1500);const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.075;controls.enablePan=true;controls.minDistance=8;controls.maxDistance=230;controls.autoRotate=false;controls.autoRotateSpeed=.48;
+ const watch=createRefinedWatch();const setting=createSettingStudy();const optics=createDiamondOptics(cubeTarget.texture);attachDiamondOptics(watch.root,optics,1.06);const specimenOptics=createDiamondOptics(cubeTarget.texture);attachDiamondOptics(setting.root,specimenOptics,4.2);setting.root.visible=false;scene.add(watch.root,setting.root);
+ const key=new THREE.DirectionalLight(0xfff6e6,1.4);key.position.set(35,55,70);scene.add(key);const rim=new THREE.DirectionalLight(0xc0dcff,.8);rim.position.set(-40,-15,20);scene.add(rim);const fill=new THREE.DirectionalLight(0xffffff,.35);fill.position.set(0,-30,-40);scene.add(fill);
+ const point=new THREE.PointLight(0xffffff,350,250,2);point.position.set(-15,25,40);scene.add(point);
+ let mode='watch',visible=true,disposed=false;
+ const states={overview:{p:[66,-78,150],t:[0,0,-4]},front:{p:[0,0,195],t:[0,0,-4]},bezel:{p:[10,-29,28],t:[0,-15,7]},crown:{p:[47,-9,18],t:[19,0,2]},back:{p:[30,-35,-115],t:[0,0,-5]},setting:{p:[-22,-28,13],t:[0,0,.5]}};
+ function view(name){const state=states[name]||states.overview;mode=name==='setting'?'setting':'watch';watch.root.visible=mode==='watch';setting.root.visible=mode==='setting';controls.minDistance=mode==='setting'?4:8;controls.maxDistance=mode==='setting'?50:230;camera.up.set(0,mode==='setting'?0:1,mode==='setting'?1:0);camera.position.set(...state.p);controls.target.set(...state.t);controls.update();}
+ function exploded(value){const x=Number(value)/100;setting.stone.position.z=4.2+x*5;setting.insert.position.z=x*1.6;setting.carrier.position.z=-x*2;}
+ function lighting(warm){key.color.set(warm?0xffd29b:0xfff6e6);rim.color.set(warm?0xffecd6:0xc0dcff);renderer.toneMappingExposure=warm?.97:1.05;}
+ const resize=()=>{const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();};const ro=new ResizeObserver(resize);ro.observe(host);const io=new IntersectionObserver(([e])=>visible=e.isIntersecting);io.observe(host);resize();view('overview');
+ function loop(){if(disposed)return;requestAnimationFrame(loop);if(visible&&!document.hidden){controls.update();renderer.render(scene,camera);}}loop();
+ return {view,exploded,lighting,rotate(v){controls.autoRotate=v;},crystal(v){watch.crystal.visible=v;},dispose(){disposed=true;ro.disconnect();io.disconnect();controls.dispose();env.dispose();cubeTarget.dispose();optics.dispose();specimenOptics.dispose();renderer.dispose();}};
+}

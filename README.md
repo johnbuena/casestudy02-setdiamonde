@@ -49,3 +49,19 @@ GitHub publication remains deferred at the user's request.
 The current site uses the three detailed ImageGen photographs in the atelier instead of the simplified procedural 3D viewer. Controls provide image cropping and full-resolution inspection, not object rotation. Earlier GLB files remain as development artifacts; they are not the currently presented products.
 
 Eyewear now follows the supplied side-set tortoiseshell design (`sunglasses-side-v2.png`). The new comparison and dedicated `retainer-cutaway-v2.png` illustrate a silver cup and stepped lower retaining insert based on supplied references. The insert matches the carrier metal; seams and finish distinguish the components. These illustrations show the intended retention arrangement without claiming tested strength or safety. Original CAD remains available for comparison.
+
+## Refined watch inspection prototype
+
+Open `/#watch-inspector`, then choose **Load interactive watch**. This adds an original procedural watch with 44 faceted stones, separate lower sleeves, a perforated bezel carrier, a sunray dial, applied indices, three hands, crystal, knurled crown, closed caseback and curved bracelet links. Orbit/zoom/pan controls, six camera presets, automatic rotation, warm lighting and crystal visibility support inspection. A separate cutaway specimen includes an illustrative separation slider.
+
+`src/refined-watch.js` is the editable geometry source. `src/watch-inspector.js` contains the viewer; `src/diamond-optics.js` contains an artistic internal-reflection shader. The latter is a real-time visual approximation, not a physically validated optical simulation. Extreme macro views remain recognizably rendered. Keep the ImageGen stills as the editorial imagery.
+
+Regenerate interchange files with `node scripts/export-refined-watch.mjs`:
+- `public/models/watch-refined-v1.glb`: named components and portable PBR materials (~12.8 MB).
+- `public/models/setting-simulation-v1.glb`: separate demonstration specimen.
+- `public/models/watch-refined-v1.obj.gz`: gzip-compressed geometry-only OBJ; decompress before importing.
+- `public/models/watch-refined-v1-spec.json`: illustrative parameters and provenance.
+
+GLB viewers use the portable PBR material rather than the website's custom diamond shader, so appearance varies. Geometry coordinates use illustrative millimetres; check import scaling in downstream software. These are visualization meshes, not STEP solids, manufacturing CAD or Tripo-generated assets. Retention geometry is invented for the demo and establishes no proprietary construction, strength or manufacturing tolerance. No Tripo credits were used.
+
+Verification: production build passed; both GLBs parsed with Three GLTFLoader and all position values were finite (334 watch meshes; 6 specimen meshes). Browser inspection covered bezel macro, crown, caseback, setting cutaway and separation, rotation, lighting, crystal control, and a 390px mobile layout without horizontal overflow. Three.js is lazy-loaded on the load button; Vite reports a size warning for the ~547 KB uncompressed viewer chunk. No deployment or GitHub push was performed.

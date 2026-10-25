@@ -1,0 +1,12 @@
+{
+  "caseDiameter": 40,
+  "stoneCount": 44,
+  "stoneDiameter": 2.12,
+  "units": "illustrative millimetres",
+  "status": "Original visualization; not manufacturing CAD, not proprietary SetDiamonde geometry.",
+  "generator": "src/refined-watch.js",
+  "formats": {
+    "glb": "Materials and part names included",
+    "obj": "Geometry interchange; materials not included"
+  }
+}
