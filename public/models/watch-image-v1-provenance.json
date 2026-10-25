@@ -1,0 +1,16 @@
+{
+  "version": "3D-2",
+  "generator": "Tripo Studio H3.1 \u2014 Geometry & Texture",
+  "sourceImage": "editorial/watch-studio.png",
+  "sourceImageSha256": "b5a6bda2f5bbccf10a7ee1fe24b4f4a711f74e0aab08a4c96e12f751bc62dab5",
+  "taskId": "b287edf7-777f-4013-abe3-eefb835ec129",
+  "privacy": "Private",
+  "creditsUsed": 55,
+  "balanceAfterGeneration": 725,
+  "textureResolution": "4K",
+  "triangles": 1929930,
+  "originalBytes": 63732380,
+  "deliveryBytes": 18157980,
+  "deliveryProcessing": "Meshopt compression; 16-bit position/UV and 12-bit normal quantization. Triangle count and embedded texture bytes retained.",
+  "limitations": "Image-derived demonstration. Cropped and unseen surfaces inferred. Not production CAD or validated setting geometry."
+}
