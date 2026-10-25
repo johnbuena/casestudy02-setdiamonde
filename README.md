@@ -87,3 +87,7 @@ Reproduce: `node scripts/prepare-image-watch.mjs /Users/reyco/Downloads/watch-im
 Visual assessment: full bracelet and upper bezel coverage improved; macro gemstones still have baked reflections and inferred facets, and are not equivalent to the ImageGen macro or a physically accurate optical model. No confidential locking geometry is represented. The separate macro remains accessible as the target visual reference. Downloaded meshes are visualization assets, not manufacturing CAD.
 
 Verification: production build and whitespace checks passed. Desktop overview/detail/reverse cameras and mobile reference dialog were visually inspected. At 390px the page has no horizontal overflow, and the browser reported no console errors. Camera presets now render immediately even in a background preview. The existing large Three.js chunk warning remains. Local only; GitHub push remains deferred.
+
+## Website copy and model ordering update
+
+Public generator names and the requested supporting copy have been removed. The tagline is now “Flawless Diamond Setting”; the partnership journey section is removed and enquiry becomes section 04. The image-derived complete watch is now **3D-1** and loads automatically on ordinary page visits. Explicit `#3d-2` links load the procedural study, now **3D-2**. Asset provenance and generation prompts are retained under `docs/asset-provenance/`, outside the published static assets.
