@@ -1,10 +1,23 @@
 import * as THREE from 'three';
+import {createOpticalDiamond,polishedMetal,machinedSection} from './luxury-surfaces.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {MeshoptDecoder} from 'three/addons/libs/meshopt_decoder.module.js';
 
 // Image-derived illustrative components, independently movable; not production CAD.
-export async function createDetailedSetting(){
- const gltf=await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync('/models/setting-textured-v1.glb');
+export async function createDetailedSetting(environment,loaded){
+ // Use the compact, prebuilt cutaway in the browser; retain source processing for export.
+ if(environment&&!loaded){
+  const gltf=await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync('/models/setting-optical-v2.glb');
+  const root=gltf.scene,parts=[];root.traverse(m=>{if(m.isMesh)parts.push(m);});
+  const stone=parts.find(m=>m.name.startsWith('Brilliant-cut'));
+  if(parts.length!==3||!stone)throw new Error('Expected the three-part optical specimen');
+  root.updateMatrixWorld(true);const box=new THREE.Box3().setFromObject(stone),center=box.getCenter(new THREE.Vector3()),radius=(box.max.x-box.min.x)/2;const gem=createOpticalDiamond(environment,radius);gem.position.set(center.x,center.y,box.min.z+radius*.82);root.add(gem);stone.removeFromParent();stone.geometry.dispose();stone.material.dispose();
+  const ordered=[parts.find(m=>m.name==='Carrier'),parts.find(m=>m.name.startsWith('Lower')),gem];
+  const positions=ordered.map(m=>m.position.z);
+  return {root,exploded(value){const x=THREE.MathUtils.clamp(Number(value)/100,0,1);ordered.forEach((m,i)=>m.position.z=positions[i]+[-1.5,7,14][i]*x);}};
+ }
+
+ const gltf=loaded||await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(environment?'/models/setting-polished-base.glb':'/models/setting-textured-v1.glb');
  gltf.scene.updateMatrixWorld(true);
  const meshes=[];gltf.scene.traverse(m=>{if(m.isMesh)meshes.push(m);});
  if(meshes.length!==3)throw new Error('Expected three separate setting components');
@@ -23,9 +36,18 @@ export async function createDetailedSetting(){
   mesh.removeFromParent();mesh.position.set(0,0,0);mesh.rotation.set(0,0,0);mesh.scale.set(1,1,1);mesh.name=names[i];root.add(mesh);return {mesh,height:size.z};
  });
  const [carrier,insert,stone]=normalized;
+ if(environment){
+  for(const part of [carrier,insert])part.mesh.material=polishedMetal(.14);
+  const h=carrier.height/2,c=insert.height/2;
+  carrier.mesh.geometry.dispose();carrier.mesh.geometry=machinedSection([[6,-h],[6,h],[4.5,h],[4.5,h-.9],[3.25,h-.9],[3.25,-h+.6],[4.6,-h+.6],[4.6,-h]]);
+  insert.mesh.geometry.dispose();insert.mesh.geometry=machinedSection([[1.6,-c],[1.6,-.7],[2.2,-.4],[4.65,c],[4.18,c],[.9,-.15],[.9,-c]]);
+  const radius=stone.mesh.geometry.boundingBox.getSize(new THREE.Vector3()).x/2;
+  const oldStone=stone.mesh;root.remove(oldStone);oldStone.geometry.dispose();
+  stone.mesh=createOpticalDiamond(environment,radius);stone.height=radius*1.16;root.add(stone.mesh);
+ }
  const carrierZ=-5+carrier.height/2,insertTop=-5+carrier.height+.4;
  const insertZ=insertTop-insert.height/2,stoneZ=insertTop-stone.height*.2;
- function exploded(value){const x=THREE.MathUtils.clamp(Number(value)/100,0,1);carrier.mesh.position.z=carrierZ-x*1.5;insert.mesh.position.z=insertZ+x*7;stone.mesh.position.z=stoneZ+x*14;}
+ function exploded(value){const x=THREE.MathUtils.clamp(Number(value)/100,0,1);carrier.mesh.position.z=carrierZ-x*1.5;insert.mesh.position.z=insertZ+x*7;stone.mesh.position.z=(environment?insertTop+.08:stoneZ)+x*14;}
  exploded(0);
  return {root,exploded};
 }

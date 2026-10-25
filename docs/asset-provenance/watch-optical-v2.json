@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-25",
+  "displayVersion": "3D-1",
+  "approach": "Hybrid refinement of existing Tripo reconstruction; no new generation credits spent",
+  "sourceWatchTask": "31980df2-9eb8-452c-b32e-43ca9c450185",
+  "sourceSettingTask": "b31ddbdc-af46-48c4-97a8-2810e841c6b9",
+  "changes": [
+    "Preserved reconstructed bracelet, lugs, crown and rear case; smoothed reconstruction noise with twelve alternating Taubin passes",
+    "Replaced irregular fused front surface with a circular bezel, thirty separate faceted diamonds, a clean dial and independent crystal",
+    "Diamond shader traces up to five internal reflections against actual convex facet planes, with approximate wavelength-dependent refraction",
+    "Crystal uses a thin-pane Fresnel reflection approximation with an illustrative sapphire index of 1.76; no baked glare or dial blur",
+    "Setting specimen uses smooth illustrative turned metal profiles and an independently shaded diamond",
+    "GLB downloads contain matching geometry and standard dielectric PBR fallback materials; custom browser optical shaders are not portable glTF materials"
+  ],
+  "environment": {
+    "title": "Studio Small 09",
+    "author": "Sergej Majboroda",
+    "source": "https://polyhaven.com/a/studio_small_09",
+    "license": "CC0",
+    "download": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/studio_small_09_2k.hdr",
+    "localFile": "public/environments/studio-small-09-2k.hdr"
+  },
+  "limitations": "Illustrative design only. Does not reproduce proprietary retention geometry or establish gemological, optical, manufacturing or retention performance. Real-time rendering remains distinct from offline reference photography. Reconstructed band and case retain some inferred shape irregularities.",
+  "exports": ["public/models/watch-optical-v2.glb", "public/models/setting-optical-v2.glb"],
+  "implementation": ["src/luxury-surfaces.js", "src/image-watch-inspector.js", "src/setting-materials.js"]
+}

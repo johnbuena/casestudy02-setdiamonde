@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+import {NodeIO} from '@gltf-transform/core';
+import {ALL_EXTENSIONS} from '@gltf-transform/extensions';
+import {meshopt,prune} from '@gltf-transform/functions';
+import {MeshoptEncoder,MeshoptDecoder} from 'meshoptimizer';
+await MeshoptEncoder.ready;
+const [source,prefix,dest]=process.argv.slice(2);
+const io=new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({'meshopt.encoder':MeshoptEncoder,'meshopt.decoder':MeshoptDecoder});
+const doc=await io.read(source);
+doc.getRoot().listMeshes().forEach((m,i)=>{const p=m.listPrimitives()[0];for(const [semantic,suffix] of [['POSITION','positions'],['NORMAL','normals']]){const b=fs.readFileSync(`${prefix}-${i}-${suffix}.bin`);p.getAttribute(semantic).setArray(new Float32Array(b.buffer.slice(b.byteOffset,b.byteOffset+b.byteLength)));}});
+for(const m of doc.getRoot().listMaterials())m.setBaseColorTexture(null).setNormalTexture(null).setMetallicRoughnessTexture(null).setBaseColorFactor([.81,.8,.78,1]).setMetallicFactor(1).setRoughnessFactor(.16);
+await doc.transform(prune(),meshopt({encoder:MeshoptEncoder,level:'high',quantizePosition:16,quantizeNormal:12,quantizeTexcoord:16}));await io.write(dest,doc);
