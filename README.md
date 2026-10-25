@@ -35,3 +35,11 @@ Two supplied CAD reference images are included, captioned as reference material.
 6. Prepare and download a local application brief.
 
 Fallback: use static CAD references if WebGL is unavailable. Keep a browser PDF or screenshots for offline presentation. No live generation service is required.
+
+## ImageGen editorial update
+
+Four selected 1536 × 1024 PNG concept images are in `public/editorial/`: watch, bracelet, acetate temple macro and a matched mounting comparison. They were generated and visually reviewed with digital-design and jewelry-setting agent guidance. Rejected versions with unintended prongs were not integrated. The lower support details are appearance concepts, not exact proprietary engineering. Comparison concerns visible crown coverage only.
+
+Click photographs to inspect at up to 250% display magnification; this enlarges original pixels and does not add image resolution. All three simplified 3D studies can rotate with neutral/warm studio lighting and front/oblique/close-up cameras. These are not photorealistic turntable reconstructions of the generated stills. GLB exports include a third bracelet asset; exported acetate uses a solid representative color while the browser adds procedural marbling.
+
+GitHub publication remains deferred at the user's request.
